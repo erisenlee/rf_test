@@ -1,5 +1,0 @@
-HOST = '10.16.21.29'
-USERNAME = 'root'
-PASSWORD = '123456'
-PORT = 3306
-DB = 'fns'

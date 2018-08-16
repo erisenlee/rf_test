@@ -1,6 +1,16 @@
 from abc import abstractmethod,ABC
 
 
+class Structure:
+    _fields = []
+    def __init__(self, *args, **kwargs):
+        if len(args) > len(self._fields):
+            raise TypeError('expected {} arguments.'.format(len(self._fields)))
+        for name, value in zip(self._fields, args):
+            setattr(self,name, value)
+        for name in self._fields[len(args):]:
+            setattr(self,name,kwargs.pop(name))
+
 
 class AutoSaved:
     def __init__(self, storage_name):

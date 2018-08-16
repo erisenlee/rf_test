@@ -1,18 +1,29 @@
 import requests
 from urllib.parse import urljoin
-
+from common.readConfig import ReadConfig
 
 class Client:
-    def __init__(self, base_url, login_endpoint, username, password):
+    def __init__(self, base_url=None, login_endpoint=None, username=None, password=None):
         self.host = base_url
-        self.login_url = urljoin(self.host, login_endpoint)
+        self.login_endpoint=login_endpoint
+        self.login_url = None
         self.username = username
         self.password = password
         self.login_status = False
         self.session = requests.Session()
 
+    @classmethod
+    def read_config(cls, section, path=None):
+        parser = ReadConfig(path)
+        instance=cls.__new__(cls)
+        parser.update_attr(instance, section)
+        setattr(instance, 'login_status', False)
+        if hasattr(instance, 'host') and hasattr(instance, 'login_endpoint'):
+            setattr(instance,'login_url',urljoin(getattr(instance,'host'),getattr(instance,'login_endpoint')))
+        return instance
+
     def login(self):
-        print(self.login_url)
+        # print(self.login_url)
         self.session.post(self.login_url, data=dict(
             username=self.username, password=self.password))
         self.login_status = True
@@ -58,12 +69,12 @@ class Client:
 
 
 if __name__ == '__main__':
-    url = 'http://fns.livejx.cn'
+    # url = 'http://fns.livejx.cn'
 
-    s = Client(url, 'fns/login', 'test_admin1', '123456')
+    s = Client.read_config('Client')
     # r = s.get(path='/fns/staff/staffList', pag=1, rows=10)
     # l='http://fns.livejx.cn/fns/pointDaily/pointDailyList?beginDate=2018-07-03+00:00:00&endDate=2018-07-03+23:59:59&operatorIds=01a68837571b4eee9719113835fedefa&pointIds=&pointTypes='
-    l='http://fns.livejx.cn/fns/area/selectProvince'
+    # l='http://10.16.21.41:8080/fns/operator/operatorList?page=1&rows=10'
     # r = s.get(url=l)
-    r=s.post(url=l)
-    print(r)
+    # r=s.post(url=
+    print(s.__dict__)
