@@ -2,9 +2,10 @@ import pymysql
 import pandas as pd
 from common.readConfig import ReadConfig
 from common.baseClass import Structure
-
+from common.log import get_log
 pymysql.install_as_MySQLdb()
 
+logger=get_log()
 
 class Db(Structure):
     _fields=['host','port','user','password','db']
@@ -24,14 +25,19 @@ class Db(Structure):
         return instance
 
     def connect(self):
-        con= pymysql.connect(
-            host =self.host,
-            port=int(self.port),
-            user=self.user,
-            password=self.password,
-            db=self.db,
-            cursorclass=pymysql.cursors.DictCursor)
-        return con
+        try:
+            con= pymysql.connect(
+                host =self.host,
+                port=int(self.port),
+                user=self.user,
+                password=self.password,
+                db=self.db,
+                cursorclass=pymysql.cursors.DictCursor)
+            logger.info('='*20+'Connect db success.'+'='*20)
+            return con
+        except Exception as e:
+            logger.error(e)
+
     def query(self, sql):
         con=self.connect()
         try:

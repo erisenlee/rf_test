@@ -1,6 +1,11 @@
 import requests
 from urllib.parse import urljoin
 from common.readConfig import ReadConfig
+from common.log import get_log
+import os.path
+
+# logger=Log(os.path.basename(__file__))
+logger = get_log()
 
 class Client:
     def __init__(self, base_url=None, login_endpoint=None, username=None, password=None):
@@ -29,8 +34,10 @@ class Client:
             self.session.post(self.login_url, data=dict(
                 username=self.username, password=self.password))
             self.login_status = True
+            logger.info('='*20+'Login success!'+'='*20)
         except requests.ConnectionError as e:
             print(e.args)
+            logger.error(str(e.args))
     def get(self, path=None, url=None, **param):
         resp = None
         self.get_login()

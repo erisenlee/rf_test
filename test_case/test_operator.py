@@ -1,5 +1,3 @@
-from interface.client import Client
-from database.db import Db
 from interface.testclass import TestCase
 # from common.logger import Log
 
@@ -16,10 +14,6 @@ class GetOperatorList(TestCase):
 
         self.assertEqual(len(resp['rows']),len(rows))
 
-    def test_operator_fail(self):
-        """运营商获取失败"""
-        resp = False
-        self.assertEqual(resp,None)
     def test_operator_error(self):
         """运营商获取错误"""
         self.assertRaises(TypeError)

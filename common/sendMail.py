@@ -7,8 +7,10 @@ from email.utils import formataddr
 import os.path
 from common.readConfig import ReadConfig
 from common.utils import new_report
+from common.log import get_log
 from settings import BASE_DIR
 
+logger=get_log()
 
 class Mail:
     
@@ -27,11 +29,12 @@ class Mail:
         msg = MIMEMultipart()
         att1 = MIMEText(mail_body, 'base64', 'utf-8')
         att1["Content-Type"] = 'application/octet-stream'
-        att1["Content-Disposition"] = 'attachment; filename="{}"'.format(os.path.split(sendfile)[-1])
-        content='new'
-        att2=MIMEText(content,'plain','utf-8')
+        filename=os.path.split(sendfile)[-1]
+        att1["Content-Disposition"] = 'attachment; filename="{}"'.format(filename)
+        # content='new message'
+        # att2=MIMEText(content,'plain','utf-8')
         msg.attach(att1)
-        msg.set_payload(att2)
+        # msg.set_payload(att2)
         msg['From']=formataddr(["AutoTest",self.sender])   #括号里的对应发件人邮箱昵称、发件人邮箱账号
         msg['To']=self.receiver       #收件人邮箱账号
         msg['Subject'] = Header(subject, 'utf-8')
@@ -40,8 +43,10 @@ class Mail:
             smtp.connect(self.smtpserver)
             smtp.login(self.user, self.password)
             smtp.sendmail(self.sender, self.receiver, msg.as_string())
+            logger.info('='*20+'Send email success!'+'='*20)
             # smtp.quit()
         except Exception as e:
+            logger.error(e)
             print('send mail error!', e)
         finally:
             smtp.quit()

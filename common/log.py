@@ -1,22 +1,23 @@
 import logging, time
-from .readConfig import ReadConfig,BASE_DIR
-import os
-
+from common.readConfig import ReadConfig
+import os.path
+from settings import BASE_DIR
 class Log:
-    def __init__(self):
+    def __init__(self, name,section='Log'):
+        self.name = name
         parser = ReadConfig()
-        log_name = parser.get_option('Log', 'name')
+        filename=parser.get_option(section,'filename')
         now = time.strftime('%Y_%m_%d_%H_%M_%S')
-
-        filepath=os.path.join(BASE_DIR,'log/'+now+log_name)
-        
-        self.logger = logging.getLogger(__name__)
+        logfile_name='log/'+filename+now+'_.log'
+        filepath = os.path.join(BASE_DIR, logfile_name)
+        self.logger = logging.getLogger(self.name)
         logging.basicConfig(
             level=logging.DEBUG,
             format='%(asctime)s %(levelname)s %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S',
             filename=filepath
         )
+    
     def info(self,msg):
         self.logger.info(msg)
     def warning(self,msg):
@@ -30,3 +31,10 @@ class Log:
     def exception(self, msg):
         self.logger.exception(msg)
 
+def get_log():
+    logger = Log(os.path.basename(__file__))
+    return logger
+
+if __name__ == '__main__':
+    main()
+    print(BASE_DIR)
