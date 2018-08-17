@@ -1,23 +1,18 @@
 import time
+import os.path
 from functools import wraps
-import unittest
 from database.db import Db
 from interface.client import Client
-from .logger import Log
-
-class TestCase(unittest.TestCase):
-    def __init__(self,*args):
-        self.logger=Log()
-        super().__init__(*args)
-    def setUp(self,client, db):
-        self.client = Client()
-        self.client.read_config(client)
-        self.db=Db.read_config(db)
+# from .logger import Log
 
 
 
-
-
+def new_report(report_dir):
+    dir_list=os.listdir(report_dir)
+    dir_list.sort(key=lambda fn: os.path.getmtime(os.path.join(report_dir, fn)))
+    file_new = os.path.join(report_dir, dir_list[-1])
+    print(file_new)
+    return file_new
 
 
 class Timer:

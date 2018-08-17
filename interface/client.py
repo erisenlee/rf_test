@@ -18,16 +18,19 @@ class Client:
         instance=cls.__new__(cls)
         parser.update_attr(instance, section)
         setattr(instance, 'login_status', False)
+        setattr(instance,'session',requests.Session())
         if hasattr(instance, 'host') and hasattr(instance, 'login_endpoint'):
             setattr(instance,'login_url',urljoin(getattr(instance,'host'),getattr(instance,'login_endpoint')))
         return instance
 
     def login(self):
         # print(self.login_url)
-        self.session.post(self.login_url, data=dict(
-            username=self.username, password=self.password))
-        self.login_status = True
-
+        try:
+            self.session.post(self.login_url, data=dict(
+                username=self.username, password=self.password))
+            self.login_status = True
+        except requests.ConnectionError as e:
+            print(e.args)
     def get(self, path=None, url=None, **param):
         resp = None
         self.get_login()
@@ -74,7 +77,8 @@ if __name__ == '__main__':
     s = Client.read_config('Client')
     # r = s.get(path='/fns/staff/staffList', pag=1, rows=10)
     # l='http://fns.livejx.cn/fns/pointDaily/pointDailyList?beginDate=2018-07-03+00:00:00&endDate=2018-07-03+23:59:59&operatorIds=01a68837571b4eee9719113835fedefa&pointIds=&pointTypes='
-    # l='http://10.16.21.41:8080/fns/operator/operatorList?page=1&rows=10'
-    # r = s.get(url=l)
-    # r=s.post(url=
+    l='http://10.16.21.41:8080/fns/operator/operatorList?page=1&rows=10'
+    r = s.get(url=l)
     print(s.__dict__)
+    # r=s.post(url=
+    # print(r.text)

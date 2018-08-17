@@ -1,7 +1,6 @@
 import configparser
 import os.path
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from settings import BASE_DIR
 
 config_file = os.path.join(BASE_DIR, 'config.ini')
 
