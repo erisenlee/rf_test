@@ -3,13 +3,13 @@ from interface.testclass import TestCase
 
 class GetOperatorList(TestCase):
     def setUp(self):
-        super().setUp('Client','Db')
-        self.url = 'http://10.16.21.41:8080/fns/operator/operatorList?page=1&rows=10'
+        super().setUp()
+        self.url = 'fns/operator/operatorList'
         self.sql = 'SELECT * FROM t_operator as a'
         
     def test_operator_success(self):
         """运营商获取成功"""
-        resp = self.client.get(url=self.url)
+        resp = self.client.get(path=self.url,page=1,rows=10)
         rows=self.db.query(self.sql)
 
         self.assertEqual(len(resp['rows']),len(rows))

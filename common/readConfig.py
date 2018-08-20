@@ -16,7 +16,12 @@ class ReadConfig:
         if not self.parser.has_section(section_name):
             raise ValueError('section_name uncorrect')
         config_list = self.parser.items(section_name)
+        if not config_list:
+            raise ValueError('empty config of {}'.format(section_name)) 
+        # for key, value in config_list:
+            # yield key, value
         return config_list
+            
         
         
 
@@ -25,11 +30,9 @@ class ReadConfig:
             return self.parser.get(section, option)
         else:
             return None
+            
     def update_attr(self, instance, section):
         config_list = self.get_section(section)
-        if not config_list:
-            raise ValueError('empty config of {}'.format(section))
-        # print(config_list)
         config_dict={k.lower():v for k, v  in config_list}
         for key, value in config_dict.items():
                 setattr(instance, key, value)
